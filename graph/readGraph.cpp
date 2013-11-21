@@ -9,11 +9,11 @@ using namespace std;
 typedef vector<int> vi;
 typedef vector<vi > vvi;
 
-int main()
-{
-	ifstream fin ("graph1.txt");
+vvi readGraph(char fileName[]){
+	ifstream fin (fileName);
 	string line;
 	
+	//adjacency list
 	vvi graph;
 	for(int i=0;i<MAX;i++){
 		vi newVec;
@@ -25,10 +25,10 @@ int main()
 		stringstream ssline(line);
 		int n1,n2;
 		ssline>>n1>>n2;
-		cout<<n1<<" "<<n2<<endl;
+		//cout<<n1<<" "<<n2<<endl;
 		graph[n1].push_back(n2);
 	}
 	
-	graph2GraphViz(graph);
-	return 0;
+	//graph2GraphViz(graph);
+	return graph;
 }
