@@ -2,7 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
-#include <stack>
+#include <queue>
 using namespace std;
 
 typedef vector<int> vi;
@@ -13,7 +13,8 @@ typedef vector<vi> vvi;
 
 bool visited[MAX]={0};
 
-
+/* IN BFS it is necessary to mark node as visited when they are added to the queue. Otherwise, they could be added twice, 
+each time from a different branch */
 
 int main(){
 
@@ -21,27 +22,27 @@ int main(){
 	vvi graph=readGraph(fileName); //obtain adjacency list
 	//graph2GraphViz(graph); //for visualization
 	
-	stack<int> dfs;
+	queue<int> bfs;
 	vi newVec;
 	vi::iterator it;
 	
 	for(int i=0;i<MAX;i++){
 		if(visited[i]==false){
-			dfs.push(i);
-			visited[i]=true;
+			bfs.push(i);
 			cout<<"PUSH "<<i<<endl;
+			visited[i]=true;
 			
-			while(!dfs.empty()){
-				int node=dfs.top();
-				dfs.pop();
-				visited[node]=true;
+			while(!bfs.empty()){
+				int node=bfs.front();
+				bfs.pop();
 				newVec=graph[node];
 				
 				for(it=newVec.begin();it!=newVec.end();it++){
 					//cout<<"from "<<node<<" view "<<*it<<endl;
 					if(visited[*it]==false){
 						cout<<"push "<<*it<<endl;
-						dfs.push(*it);
+						visited[*it]=true;
+						bfs.push(*it);
 					}
 				}
 				
