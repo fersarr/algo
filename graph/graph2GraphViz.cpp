@@ -10,9 +10,9 @@ using namespace std;
 typedef vector<int> vi;
 typedef vector<vi> vvi;
 
-void graph2GraphViz(vvi&);
+//void graph2GraphViz(vvi&);
 
-int main()
+/* int main()
 {
 	cout<<"graph 2 GraphViz - Written to file \n\n";
 	ifstream fin("graph1.txt");
@@ -36,7 +36,7 @@ int main()
 	graph2GraphViz(graph);
 	return 0;
 }
-
+ */
 
 void graph2GraphViz(vvi &graph){
 	ofstream fout("graphVizFile.gv");
