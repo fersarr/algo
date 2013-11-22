@@ -50,8 +50,7 @@ int main(){
 	
 	for(int i=0;i<MAX;i++){
 		if(visited[i]==false){
-			cout<<"DFS "<<i<<endl;
-			//dfs(i);
+			//cout<<"DFS "<<i<<endl;
 			dfs.push(make_pair(false,i));
 		}	
 		
