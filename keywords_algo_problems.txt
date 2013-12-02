@@ -1,0 +1,12 @@
+Algorithm Keywords
+
+Graph-SCC
+people,call,circle,calling,outside,phone,calls,directly,indirectly,called, dictionary, word, words, defines, definition, independent, independenttly
+sub
+
+Disjoint-sets
+graph, nodes, edges, connected, path, subgraphs, maximal, set, disjoint, network, connections, bi-directional, interconnected, directly
+DNA, mutation, mutant, sequence, common
+
+SegmentTree
+segment, interval, product, sum, min, max, rounds, each, command, query, question, change, update, two, values, elements, sequence
