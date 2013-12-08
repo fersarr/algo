@@ -1,0 +1,31 @@
+test cases & tricks
+
+DEBUGGING ****************************************************
+check all == eq comparisons are == and not =
+
+
+
+
+
+TEST CASES **************************************************************
+general test cases---
+don't print the final \n if the answer is an empty list
+
+graph problems --- 
+don't assume all connected
+try 0 edges
+try 0 nodes
+don't assume node numbers will be 1,2,3,4,etc rather assume 1,99,45,1000,etc
+
+
+
+
+
+
+
+TRICKS **************************************************************
+
+int node2add=nodes[i]+1;
+char numstr[21]; // enough to hold all numbers up to 64-bits
+sprintf(numstr, "%d", node2add);
+

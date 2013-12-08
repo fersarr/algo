@@ -10,3 +10,4 @@ DNA, mutation, mutant, sequence, common
 
 SegmentTree
 segment, interval, product, sum, min, max, rounds, each, command, query, question, change, update, two, values, elements, sequence
+several, indices, most frequent value, among

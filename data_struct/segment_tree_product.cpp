@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <cstring>
 using namespace std;
 
 
@@ -19,12 +20,16 @@ P 1 4
 //This problem requires dynamic quering for intervals inside a static array that can be updated. Therefore, SEGMENT TREE.
 //In this case, the segTree is built for interval product.
 
+#define MAX 100010
+int A[MAX];
+char answer[MAX];
+
 vector<int> segTree;
 
 void init_segTree(int N)
 {
 	int _size=2*pow(2,  floor(log(N)/log(2))+1  );
-	cout<<"size "<<_size<<endl;
+	//cout<<"size "<<_size<<endl;
 	segTree.resize(_size);
 }
 
@@ -45,26 +50,26 @@ int build_segTree(int A[],int node,int a,int b){
 int query(int A[],int node,int a,int b,int i,int j)
 {
 	//cout<<"IN "<<a<<","<<b<<endl;
-	if (j<a || i >b){ //query interval is outside of array
+	if (j<a || i >b){ //query interval is outside of this segment, discard
 		//cout<<"discard "<<a<<","<<b<<endl;
-		return -1;
+		return 1; //neutral element of multiplication
 	}
-	else if( a>=i && b<=j) //[a-b] is inside [i-j] return the segment value
+	else if( a>=i && b<=j){ //[a-b] is inside [i-j] return the segment value
+		//cout<<"\t"<<segTree[node]<<endl;
 		return segTree[node];
+	}
 	else{
 		int avg=(a+b)/2;	
 		int left=query (A,2*node  ,a      ,avg,i,j);
 		int right=query(A,2*node+1,avg+1  ,b  ,i,j);
 		//cout<<"\t"<<"L,R   "<<left<<","<<right<<endl;
-		if      (left  == -1) return right;
-		else if (right == -1) return left;
-		else				  return right*left; //combine unusual branches	 
+		return right*left; //combine unusual branches	 
 	}
 }
 
 void update(int A[],int node,int a,int b,int updateIndex,int updateValue)
 {
-	if (updateIndex<a || b <updateIndex){ //wrong branch, discard
+	if (updateIndex<a || b <updateIndex){ //wrong branch, discard ///VER DE EVITAR ESTO SOLO LLAMANDO A UPDATE EN LA RAMA CORRECTA
 		//cout<<"discard "<<a<<","<<b<<endl;
 		return ;
 	}
@@ -72,59 +77,104 @@ void update(int A[],int node,int a,int b,int updateIndex,int updateValue)
 		A[updateIndex]=updateValue;
 		segTree[node]=updateValue;
 	}
-	else if(a<=updateIndex && updateIndex<=b){ //its inside, go to sons {
+	else{ //updateIndex is inside [a-b], go to sons 
 		int avg=(a+b)/2;	
 		update(A,2*node  ,a      ,avg,updateIndex,updateValue);
 		update(A,2*node+1,avg+1  ,b  ,updateIndex,updateValue);
 		segTree[node]=segTree[2*node]*segTree[2*node+1];
+		//cout<<"\t"<<segTree[2*node]*segTree[2*node+1]<<endl;
 	}
 
 }
 
 int main()
 {
-
-	segTree.clear();
-	int A[]={1,2,3,4,5,6,7};
-	int _size=sizeof(A)/sizeof(int);
-	int maxIndex=_size-1;
-	init_segTree(_size);
-	build_segTree(A,1,0,maxIndex);
-
-	cout<<"QUERY "<<query(A,1,0,maxIndex,0,3)<<endl<<endl;
-	cout<<"QUERY "<<query(A,1,0,maxIndex,1,3)<<endl<<endl;
-	cout<<"QUERY "<<query(A,1,0,maxIndex,2,5)<<endl<<endl;
-	cout<<"QUERY "<<query(A,1,0,maxIndex,0,6)<<endl<<endl;
-	
-	update(A,1,0,6,0,0);
-	
-	cout<<"QUERY "<<query(A,1,0,maxIndex,0,3)<<endl<<endl;
-	cout<<"QUERY "<<query(A,1,0,maxIndex,1,3)<<endl<<endl;
-	
-	update(A,1,0,6,0,1);
-	cout<<"QUERY "<<query(A,1,0,maxIndex,0,6)<<endl<<endl;
-	
-	update(A,1,0,6,3,1000); //instead of 4 we put 1000 -> 5040/4=1260 -> *1000 -> 1260000
-	cout<<"QUERY "<<query(A,1,0,maxIndex,0,6)<<endl<<endl;
-	
-	/* output
-	QUERY 24
-
-QUERY 24
-
-QUERY 360
-
-QUERY 5040
-
-QUERY 0
-
-QUERY 24
-
-QUERY 5040
-
-QUERY 1260000
-
-*/
+	int n,k;
+	memset(answer,'_',MAX);
+	while(cin>>n>>k){
+		segTree.clear();
+		int _size=n;
+		int maxIndex=_size-1;
+		int pos=0; //position in answer string
+		
+		for(int i=0;i<n;i++){
+			int num;
+			cin>>num;
+			if    	(num>0) A[i]=1;
+			else if	(num<0) A[i]=-1;
+			else			A[i]=0;
+		}
+		
+		init_segTree(_size);
+		build_segTree(A,1,0,maxIndex);
+		
+		//cout<<"COMMANDS --- "<<endl;
+		char c;
+		int i,j,ans;
+		for(int q=0;q<k;q++){
+			cin>>c>>i>>j;
+			i=i-1;
+			if(c=='C'){
+				//cout<<"update --- "<<i<<" "<<j<<endl;
+				if(j>0) 	 j=1;
+				else if(j<0) j=-1;
+				else 		 j=0;
+				update(A,1,0,maxIndex,i,j);
+			}
+			else{
+				j=j-1; //j is index too
+				if (pos) pos--; //erase (overwrite) the \0 (NULL) from last product command
+				ans=query(A,1,0,maxIndex,i,j);
+				if(ans==0)		cout<<'0';
+				else if(ans>0)	cout<<'+';
+				else 			cout<<'-';
+				//cout<<"ans "<<ans<<" in answer[] "<<pos<<"="<<answer[pos-2]<<endl;
+			}	
+			
+		}
+		
+		cout<<endl;
+		
+		
+	}
 
 	return 0;
 }
+
+
+
+
+/*
+4 6
+-2 6 0 -1
+C 1 10
+P 1 4
+C 3 7
+P 2 2
+C 4 -5
+P 1 4
+5 9
+1 5 -2 4 3
+P 1 2
+P 1 5
+C 4 -5
+P 1 5
+P 4 5
+C 3 0
+P 1 5
+C 4 -5
+C 4 -5
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
