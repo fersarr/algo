@@ -1,0 +1,5 @@
+printf
+%[flags][width][.precision][length]specifier
+
+flags
+0	Left-pads the number with zeroes (0) instead of spaces

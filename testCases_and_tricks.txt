@@ -29,3 +29,15 @@ int node2add=nodes[i]+1;
 char numstr[21]; // enough to hold all numbers up to 64-bits
 sprintf(numstr, "%d", node2add);
 
+round up to the tenths place
+double round(double number)
+{
+    return number < 0.0 ? ceil(number - 0.5) : floor(number + 0.5);
+}
+
+always use smallest unit -> (dollars,cents) -> use cents - >$11.34 -> 1134
+
+how does celiling work? floot? how to round to .001?
+
+
+
