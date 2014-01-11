@@ -3,3 +3,38 @@ printf
 
 flags
 0	Left-pads the number with zeroes (0) instead of spaces
+
+-----
+
+DIFF
+
+
+This example will do what you need :
+
+diff --side-by-side --suppress-common-lines FILE_A FILE_B
+
+And if you use it often you can make a personalized alias for it.
+
+alias diffs='diff --side-by-side --suppress-common-lines'
+
+---
+sort descending
+std::greater<int>()
+std::sort(numbers.begin(), numbers.end(), std::greater<int>());
+
+------
+string s;
+while(getline(cin, s, '\t')){
+    // Do something with the line
+}
+If the delimiter is found, it is extracted and discarded, i.e. it is not stored and the next input operation will begin after it.
+
+-----
+
+cin.ignore(1)
+cin.ignore(256,EOF)
+cin.ignore(10,'\n')
+
+if using cin and getline, remember that CIN does NOT consume \n
+
+-------

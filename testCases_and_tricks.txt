@@ -1,8 +1,11 @@
 test cases & tricks
 
 DEBUGGING ****************************************************
+BEFORE SUBMITING
+Try to identical testcases in a row (check for initialization)
+LONG LONG!
 check all == eq comparisons are == and not =
-
+don't assume all integers, might have doubles as inputs
 
 
 
@@ -10,6 +13,9 @@ check all == eq comparisons are == and not =
 TEST CASES **************************************************************
 general test cases---
 don't print the final \n if the answer is an empty list
+
+when using #define MAXCOINS 500
+don't use MAX COINS in the for-loops! use the number of coins in that test case
 
 graph problems --- 
 don't assume all connected
@@ -39,5 +45,19 @@ always use smallest unit -> (dollars,cents) -> use cents - >$11.34 -> 1134
 
 how does celiling work? floot? how to round to .001?
 
+
+INPUT ***************************************************************
+
+when input is floating put, careful because of precision errors (uva 147)
+
+//WRONG
+/* 	while(cin>>totalDouble && totalDouble!=0.00){ // CANT USE THIS BECAUSe 285.65 goes to 28564 which is invalidad
+		total=totalDouble*100; 
+		printf("%6.2lf%17llu\n",totalDouble,memo[total]);*/
+
+CORRECT
+	while(scanf("%d.%d",&in1,&in2) && !(in1==0 && in2==0)){
+		total = in1*100 + in2;
+		printf("%3d.%.2d%17llu\n",in1,in2,memo[total]);
 
 

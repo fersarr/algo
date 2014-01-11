@@ -14,3 +14,16 @@ several, indices, most frequent value, among
 
 bisection method
 find x,x, sin(x), sin,=, real, numbers, function.
+
+binary search the answer
+attemp everytime there's a function. min, max, minimum, maximum,sin,cos,tan,min(max()),
+#remember to sort first!!
+#when doing binary search on ints, remember left=mid+1 or right if not using difference delta(error)
+#also possible to search for uppear bound, lower bound: elements that are the last or first ones to satisfy a condition or belong to an interval in array (like less than 9)
+#in bisection method we need f(left)*f(right)<0 that is, one negative and one positive. good to know this:
+#From uva problem 10341: The function is continuous and differentiable on [0,1]. Just take its derivative, and you'll see that f'(x) <= 0 for all x in [0,1], and for given restrictions on values of p,q,...,u. 
+#That means f(x) is non-increasing on [0,1].
+
+greedy
+assign, more than, minimized, min, max, minimum, maximum,summing,average, balance, imbalance
+#when not sure, sort data or introduce tweaks to see if greedy strategy emerges
