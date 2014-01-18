@@ -56,7 +56,7 @@ void dfs_mark(int node, int SCCid){ //mark with SCC id
 
 int main()
 {
-	ifstream fin ("graph1.txt");
+	ifstream fin ("graph2.txt"); //graph1.txt
 	
 	for(int i=0;i<MAX;i++){
 		vi newVecG,newVecR;
