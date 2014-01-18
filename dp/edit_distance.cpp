@@ -11,14 +11,17 @@ int main(){
 	//string s1="informatics";
 	//string s2="bioinformatics";
 	
-	string s1="oferta";
-	string s2="chofer";
+	//string s1="oferta";
+	//string s2="chofer";
 	
 	//string s1="intention";
 	//string s2="execution";
 	
 	//string s1="saturday";
 	//string s2="sunday";
+	
+	string s1="abcde";
+	string s2="bcgfe";
 	
 	int m=s1.length();
 	int n=s2.length();
