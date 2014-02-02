@@ -17,9 +17,8 @@ vector<int> pSet; //parent set. pSet[i] indicates which set i belongs to, using 
 void initSet(int _size) //initialize all sets as having just one element
 {
 	pSet.resize(_size);
-	for(int i=0;i<_size;i++){
+	for(int i=0;i<_size;i++)
 		pSet[i]=i;
-	}
 }
 
 int findSet(int n){
