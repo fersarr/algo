@@ -38,3 +38,10 @@ cin.ignore(10,'\n')
 if using cin and getline, remember that CIN does NOT consume \n
 
 -------
+
+for most graph problems  use adjmatrix[][] 
+or adjlist vector<vector <int> > or vector<int> graph[];
+but for
+	MST (Kruskal) use only priority_queue<pair<int,pair<int,int> > >  (weight,node1,node2)
+	Dijkstra adjlist + priority_queue<best_dist_so_far_tothisnode,node>
+		sorted by weight: priority_queue<pair<int,int>,vector<pair<int,int> >, greater<pair<int,int> > > reachedNodes; // <best_dist_so_far_tothisnode,node>
