@@ -114,8 +114,6 @@ int main()
 			bfs.pop();
 			if(node==t)	break; //stop BFS if we reach sink, should emptystack but we redeclare eachtime
 			vector<int> neighbors=adjList[node];
-			//why if there is still capacity in backward edges, we should keep going?
-			// why does this guarantee that we can keep adding flow
 			for(it=neighbors.begin();it!=neighbors.end();it++){
 				//cout<<"\t neighbor "<<*it<<endl;
 				if(residualCapacity[node][*it]>0 && parent[*it]==-1){ //positive residual capacity & not visited

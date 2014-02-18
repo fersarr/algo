@@ -1,0 +1,195 @@
+//Max cost max flow problem: use Bellman ford for negative edges,
+//cost(edge1) = flow(edge1)*cost(edge1) ->therefore, it can be negative in backedge 
+//because they are negative, we can't use dijkstra unless we use potentials: non-negative edge weights (cost + potential)
+//uses succesive shortest path algo
+//works if no negative cycles
+
+-------------------------------------------------------
+http://online-judge.uva.es/board/viewtopic.php?f=22&t=11719&sid=c32a6c41b711fabe1c48fdf1a2d7c395
+(1) why the potential assigned to each vertex grantes us that there is no negative path? 
+(1)ANSWER: Assuming no negative cycle, the following inequality ALWAYS holds: 
+
+d(s,v) <= d(s,u) + c(u,v) --- (1) 
+
+for all u,v where s is the starting vertex, d(s,u) and d(s,v) minimum distances to vertices u and v and c(u,v) the cost of the edge between u and v. 
+
+Rearranging gives c(u,v) + d(s,u) - d(s,v) >= 0 and therefore setting the initial potential of a vertex to be the minimum distance from s to it will always result in initial non-negative reduced costs. 
+
+To prove that the reduced costs always remain non-negative, use induction. I'll give a brief outline of the proof - the details can be found online: 
+
+After augmentation, we have p'(u) = p(u) + d'(s,u) where p is the original potential, p' the new potential, and d'(s,u) the distance from s to u under potential p (the original potential). 
+
+For any edge (u,v), the new reduced cost is now changed by d'(s,u) - d'(s,v). If an edge in the new residual network was previously in the old residual network, we can again appeal to the triangle inequality (1) above. 
+
+If an edge (u,v) in the new residual network was not in the old residual network, then (v,u) must be on some shortest path from s to t. Then the reduced cost on (u,v) must then be equal to 0, because d'(s,v) = d'(s,u) + c'(u,v) where c'(u,v) is the old reduced cost on (u,v) and the new reduced cost is c'(u,v) + d'(s,u) - d'(s,v) = 0. 
+
+
+
+
+-----------------------------
+from StevieT about potentials:
+http://apps.topcoder.com/forums/?module=Thread&threadID=599510&mc=26&view=threaded
+
+Flow potentials are a way of transforming the network in a way that doesn't affect the optimal flow solution. We can then solve for the optimal solution in our new network and it will be the same as the optimal solution in the original network. The advantage of doing this is that it allows us to maintain positive edge weights, so we can use more efficient algorithms in the new network, such as Dijkstra rather than Bellman-Ford in the successive shortest path method.
+
+The transformation trick is this: For each node i, assign a number πi (this can be anything you want) and add this value to the cost of any edge that originates at node i and subtract it from any edge that ends at node i. Now consider a flow in this new network. Any flow that is transient at node i, will come in on an edge where the cost has been reduced by πi and leave on an edge where it has been increased by πi, so the cost of this flow will be the same as if you hadn't applied the potential at all. The only place that the transformation affects the cost is where the flow isn't transient at the sources and sinks, but this flow is fixed (we know how much flow is entering and leaving at the sources and sinks by the way we set up the problem). Therefore the change in cost for this particular flow caused by the transformation to our new network is independent of how the flow travels through the network. Hence an optimal solution in the original network corresponds to an optimal solution in the new one too.
+
+The next part of the trick comes in the successive shortest paths algorithm. If we set the flow potential of each node to be equal to the cost of the shortest path from our super-source to that node, and maintain this property after each augmentation, then we end up with all the edge-weights in our graph being positive, so we can use Dijkstra's algorithm to calculate the shortest augmenting paths.
+
+
+
+
+-----------------------------------
+
+
+Min Cost Max Flow explanation from Petr. Using potentials for dijkstra after one bellman-ford
+http://apps.topcoder.com/forums/?module=Thread&threadID=507552&mc=57&view=threaded
+
+I was trying to find a link, but couldn't.
+
+The basic algorithm is the following (it assumes there are no negative-cost cycles): each time search for the cheapest augmenting path using Bellman-Ford algorithm.
+
+(From now on, weight == cost, and shortest == lightest == cheapest).
+
+We'd like to use Dijkstra, but after augmenting we get edges with negative cost (reverse to the original edges). To deal with that, we introduce potentials. That is, we have an array pi[v], where v iterates over vertices of the graph. And we assume that the weight (cost) of each edge is w[e]+pi[start]-pi[finish], where w[e] is the actual weight (cost) of the edge, pi[start] is the potential of the start vertex, and pi[finish] is the potential of the end vertex. Considering the sum of these altered weights along the path from s to t, we see that almost all additions and substractions match, and the new weight of the path is changed by pi[s]-pi[t] - a constant. Thus, the shortest path in terms of these new weights is the same as the shortest path in terms of actual weights. So, our goal is to maintain such pi[v] that all altered weights are non-negative so we can use Dijkstra to find shortest paths.
+
+Initially we set pi[v] to the shortest distances from s to v. Let us check that all altered weights are non-negative. Consider an edge e from a to b. If w[e]+pi[a]-pi[b]<0, then pi[b]>pi[a]+w[e] - but that contradicts with shortestness of the path that is refernced by pi[b].
+
+What happens later? Every time we augment a path, a reverse edge with negative weight may be added. To avoid that, we alter the potentials before augmenting in such a way that all edges along the augmenting path have altered weight of zero. Thus all the added reverse edges will also have altered weight of zero, and everything will be OK.
+
+Let l[v] be the shortest distance from s to v found by Dikstra on this step. Let pi'[v]=pi[v]+l[v]. It can be checked that all edges along the augmenting path (here we rely on the fact that it's the shortest path) have altered weight of zero according to pi', and all the edges remain non-negative.
+
+
+
+------------------------------------
+implementation
+
+http://shygypsy.com/tools/mcmf3.cpp
+
+
+using namespace std;
+
+// the maximum number of vertices + 1
+#define NN 1024
+
+// adjacency matrix (fill this up)
+int cap[NN][NN];
+
+// cost per unit of flow matrix (fill this up)
+int cost[NN][NN];
+
+// flow network and adjacency list
+int fnet[NN][NN], adj[NN][NN], deg[NN];
+
+// Dijkstra's successor and depth
+int par[NN], d[NN];        // par[source] = source;
+
+// Labelling function
+int pi[NN];
+
+#define CLR(a, x) memset( a, x, sizeof( a ) )
+#define Inf (INT_MAX/2)
+
+// Dijkstra's using non-negative edge weights (cost + potential)
+#define Pot(u,v) (d[u] + pi[u] - pi[v])
+bool dijkstra( int n, int s, int t )
+{
+    for( int i = 0; i < n; i++ ) d[i] = Inf, par[i] = -1;
+    d[s] = 0;
+    par[s] = -n - 1;
+
+    while( 1 ) 
+    {
+        // find u with smallest d[u]
+        int u = -1, bestD = Inf;
+        for( int i = 0; i < n; i++ ) if( par[i] < 0 && d[i] < bestD )
+            bestD = d[u = i];
+        if( bestD == Inf ) break;
+
+        // relax edge (u,i) or (i,u) for all i;
+        par[u] = -par[u] - 1;
+        for( int i = 0; i < deg[u]; i++ )
+        {
+            // try undoing edge v->u      
+            int v = adj[u][i];
+            if( par[v] >= 0 ) continue;
+            if( fnet[v][u] && d[v] > Pot(u,v) - cost[v][u] ) 
+                d[v] = Pot( u, v ) - cost[v][u], par[v] = -u-1;
+        
+            // try edge u->v
+            if( fnet[u][v] < cap[u][v] && d[v] > Pot(u,v) + cost[u][v] ) 
+                d[v] = Pot(u,v) + cost[u][v], par[v] = -u - 1;
+        }
+    }
+  
+    for( int i = 0; i < n; i++ ) if( pi[i] < Inf ) pi[i] += d[i];
+  
+    return par[t] >= 0;
+}
+#undef Pot
+
+int mcmf3( int n, int s, int t, int &fcost )
+{
+    // build the adjacency list
+    CLR( deg, 0 );
+    for( int i = 0; i < n; i++ )
+    for( int j = 0; j < n; j++ ) 
+        if( cap[i][j] || cap[j][i] ) adj[i][deg[i]++] = j;
+        
+    CLR( fnet, 0 );
+    CLR( pi, 0 );
+    int flow = fcost = 0;
+    
+    // repeatedly, find a cheapest path from s to t
+    while( dijkstra( n, s, t ) ) 
+    {
+        // get the bottleneck capacity
+        int bot = INT_MAX;
+        for( int v = t, u = par[v]; v != s; u = par[v = u] )
+            bot <?= fnet[v][u] ? fnet[v][u] : ( cap[u][v] - fnet[u][v] );
+
+        // update the flow network
+        for( int v = t, u = par[v]; v != s; u = par[v = u] )
+            if( fnet[v][u] ) { fnet[v][u] -= bot; fcost -= bot * cost[v][u]; }
+            else { fnet[u][v] += bot; fcost += bot * cost[u][v]; }
+    
+        flow += bot;
+    }
+  
+    return flow;
+}
+
+//----------------- EXAMPLE USAGE -----------------
+#include <iostream>
+#include <stdio.h>
+using namespace std;
+
+int main()
+{
+  int numV;
+  //  while ( cin >> numV && numV ) {
+  cin >> numV;
+    memset( cap, 0, sizeof( cap ) );
+
+    int m, a, b, c, cp;
+    int s, t;
+    cin >> m;
+    cin >> s >> t;
+    
+    // fill up cap with existing capacities.
+    // if the edge u->v has capacity 6, set cap[u][v] = 6.
+    // for each cap[u][v] > 0, set cost[u][v] to  the
+    // cost per unit of flow along the edge i->v
+    for (int i=0; i<m; i++) {
+      cin >> a >> b >> cp >> c;
+      cost[a][b] = c; // cost[b][a] = c;
+      cap[a][b] = cp; // cap[b][a] = cp;
+    }
+
+    int fcost;
+    int flow = mcmf3( numV, s, t, fcost );
+    cout << "flow: " << flow << endl;
+    cout << "cost: " << fcost << endl;
+
+    return 0;
+}
