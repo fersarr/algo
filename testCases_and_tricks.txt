@@ -22,7 +22,9 @@ don't assume all connected
 try 0 edges
 try 0 nodes
 don't assume node numbers will be 1,2,3,4,etc rather assume 1,99,45,1000,etc
-
+more than 1 (u,v) edge, especially for max-flow problems
+same station twice but different times (trains or subways)
+for DAG: topsort+relaxEdges not good if LOTS OF EDGES
 
 
 
