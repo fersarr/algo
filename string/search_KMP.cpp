@@ -1,6 +1,14 @@
 #include <iostream>
 using namespace std;
 
+//KMP string matching
+
+//KMP string matching time O(m+n) N=TEXT.LENGTH() and m is patterns length
+//preprocessing (fail function) takes at most 2*length(pattern)
+//algorithm: 2*length(text) - length(pattern) - 1
+//thus the overall complexity is O(m+n) and no more m + 2*n 
+
+
 //find the pattern in the text
 
 #define TESTS 6
@@ -21,7 +29,7 @@ string texts[TESTS]={"holasoyfersarr",
 
 
 #define MAX 1000
-int fail[MAX];
+int fail[MAX]; //0 to m (total length: lengthofpattern+1
 
 
 
