@@ -1,0 +1,37 @@
+LCA Lowest Common Ancestor:
+
+find LCA of nodes A and B
+
+
+---------------------------------------------------------
+for binary tree O(n) time where n=nodes. This is a good time since it's not a BST
+so we can't use selection/elimination algorithms
+
+ALGO: 
+if A and B lie in the Left subtree, so does LCA (same applies for right subtree). Do this recursively.
+So from root go to left and right recursively, if Afound && Bfound then the curr is the LCA.
+
+Not so true: do a postorder walk & the LCA is the ''''first node visited'''' after A and B have been visited
+detailed. 
+
+**with parent pointer: time O(h) depth of tree space o(1). 
+say Ha is depth of node A and Hb of node b. if Ha>=Hb then move Up from Ha-Hb nodes. 
+At this point, we are at the same height as node B. so move UP one by one in each node until common node.
+
+to get the depth, just go up to the root (using parent link)
+
+we can use hash to trade space for time.
+
+---------------------------------------------------------
+for a binary search tree BST
+
+
+for nodes b & s find LCA 
+
+since nodes satisfy BST property and keys are distinct:
+
+initialize x to the root
+
+X is LCA if   x.key==s.key|| x.key==b,key  or  ((s.key<x.key) && (x.key<b.key)
+
+
